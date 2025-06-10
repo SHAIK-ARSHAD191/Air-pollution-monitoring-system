@@ -1,0 +1,353 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h1 class="page-title">Air Quality Dashboard</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="dashboard-card">
+            <div class="metric-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+                </svg>
+            </div>
+            <div class="metric-label">Air Quality Index</div>
+            <div class="d-flex align-items-center">
+                <span class="status-indicator" id="aqi-status"></span>
+                <div class="metric-value" id="aqi-value">--</div>
+            </div>
+            <div class="mt-2" id="aqi-description">Loading...</div>
+            <div class="air-quality-scale mt-3">
+                <div class="scale-marker" id="aqi-marker"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="dashboard-card">
+            <div class="metric-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/>
+                    <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/>
+                </svg>
+            </div>
+            <div class="metric-label">PM2.5 (μg/m³)</div>
+            <div class="metric-value" id="pm25-value">--</div>
+            <div class="mt-2 text-muted">Fine particulate matter</div>
+            <div class="stat-trend up mt-2" id="pm25-trend">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z"/>
+                </svg>
+                <span>2.3%</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="dashboard-card">
+            <div class="metric-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M2.5 15a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1 0-1h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1h-11zm2-13v1c0 .537.12 1.045.337 1.5h6.326c.216-.455.337-.963.337-1.5V2h-7zm3 6.35c0 .701-.478 1.236-1.011 1.492A3.5 3.5 0 0 0 4.5 13s.866-1.299 3-1.48V8.35zm1 0v3.17c2.134.181 3 1.48 3 1.48a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351z"/>
+                </svg>
+            </div>
+            <div class="metric-label">PM10 (μg/m³)</div>
+            <div class="metric-value" id="pm10-value">--</div>
+            <div class="mt-2 text-muted">Coarse particulate matter</div>
+            <div class="stat-trend down mt-2" id="pm10-trend">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4z"/>
+                </svg>
+                <span>1.8%</span>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="dashboard-card">
+            <div class="metric-card-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M8 16a6 6 0 0 0 6-6c0-1.655-1.122-2.904-2.432-4.362C10.254 4.176 8.75 2.503 8 0c0 0-6 5.686-6 10a6 6 0 0 0 6 6ZM6.646 4.646l.708.708c-.29.29-1.128 1.311-1.907 2.87l-.894-.448c.82-1.641 1.717-2.753 2.093-3.13Z"/>
+                </svg>
+            </div>
+            <div class="metric-label">CO2 (ppm)</div>
+            <div class="metric-value" id="co2-value">--</div>
+            <div class="mt-2 text-muted">Carbon dioxide level</div>
+            <div class="stat-trend up mt-2" id="co2-trend">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z"/>
+                </svg>
+                <span>3.1%</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="dashboard-card">
+            <h3>Historical PM2.5 Levels</h3>
+            <div id="pm25-chart" style="height: 400px;"></div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="dashboard-card">
+            <h3>Historical AQI</h3>
+            <div id="aqi-chart" style="height: 400px;"></div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="dashboard-card">
+            <h3>Environmental Conditions</h3>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="metric-card-icon me-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M9.5 12.5a1.5 1.5 0 1 1-2-1.415V6.5a.5.5 0 0 1 1 0v4.585a1.5 1.5 0 0 1 1 1.415z"/>
+                                <path d="M5.5 2.5a2.5 2.5 0 0 1 5 0v7.55a3.5 3.5 0 1 1-5 0V2.5zM8 1a1.5 1.5 0 0 0-1.5 1.5v7.987l-.167.15a2.5 2.5 0 1 0 3.333 0l-.166-.15V2.5A1.5 1.5 0 0 0 8 1z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="metric-label">Temperature</div>
+                            <div class="h4 mb-0" id="temperature-value">-- °C</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="metric-card-icon me-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                <path d="M8 16a6 6 0 0 0 6-6c0-1.655-1.122-2.904-2.432-4.362C10.254 4.176 8.75 2.503 8 0c0 0-6 5.686-6 10a6 6 0 0 0 6 6ZM6.646 4.646l.708.708c-.29.29-1.128 1.311-1.907 2.87l-.894-.448c.82-1.641 1.717-2.753 2.093-3.13Z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="metric-label">Humidity</div>
+                            <div class="h4 mb-0" id="humidity-value">-- %</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="dashboard-card">
+            <h3>Air Quality Index (AQI) Scale</h3>
+            <div class="row mt-3">
+                <div class="col-md-8">
+                    <div class="aqi-scale">
+                        <div class="d-flex mb-3 align-items-center">
+                            <div class="aqi-badge good">0-50</div>
+                            <div class="ms-3">
+                                <h5 class="mb-1">Good</h5>
+                                <p class="mb-0 text-muted">Air quality is satisfactory, and air pollution poses little or no risk.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex mb-3 align-items-center">
+                            <div class="aqi-badge moderate">51-100</div>
+                            <div class="ms-3">
+                                <h5 class="mb-1">Moderate</h5>
+                                <p class="mb-0 text-muted">Air quality is acceptable. However, there may be a risk for some people.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex mb-3 align-items-center">
+                            <div class="aqi-badge unhealthy-sensitive">101-150</div>
+                            <div class="ms-3">
+                                <h5 class="mb-1">Unhealthy for Sensitive Groups</h5>
+                                <p class="mb-0 text-muted">Members of sensitive groups may experience health effects.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex mb-3 align-items-center">
+                            <div class="aqi-badge unhealthy">151-200</div>
+                            <div class="ms-3">
+                                <h5 class="mb-1">Unhealthy</h5>
+                                <p class="mb-0 text-muted">Everyone may begin to experience health effects.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex mb-3 align-items-center">
+                            <div class="aqi-badge very-unhealthy">201-300</div>
+                            <div class="ms-3">
+                                <h5 class="mb-1">Very Unhealthy</h5>
+                                <p class="mb-0 text-muted">Health alert: everyone may experience more serious health effects.</p>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <div class="aqi-badge hazardous">300+</div>
+                            <div class="ms-3">
+                                <h5 class="mb-1">Hazardous</h5>
+                                <p class="mb-0 text-muted">Health warnings of emergency conditions. The entire population is likely to be affected.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="current-aqi-status p-4 rounded-3">
+                        <h4 class="mb-3">Current Status</h4>
+                        <div class="current-aqi-details">
+                            <div class="d-flex align-items-center mb-2">
+                                <span class="status-indicator" id="current-aqi-status"></span>
+                                <span class="h3 mb-0" id="current-aqi-label">Loading...</span>
+                            </div>
+                            <p class="mb-0" id="current-aqi-description">Calculating air quality...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function updateAQIMarker(aqi) {
+        const marker = document.getElementById('aqi-marker');
+        const maxAQI = 300;
+        const percentage = Math.min((aqi / maxAQI) * 100, 100);
+        marker.style.left = `${percentage}%`;
+    }
+
+    function updateAQIStatus(aqi) {
+        const statusIndicator = document.getElementById('aqi-status');
+        const currentStatusIndicator = document.getElementById('current-aqi-status');
+        const description = document.getElementById('aqi-description');
+        const currentLabel = document.getElementById('current-aqi-label');
+        const currentDescription = document.getElementById('current-aqi-description');
+        
+        let status, color, text;
+        
+        if (aqi <= 50) {
+            status = 'good';
+            color = 'var(--success-color)';
+            text = 'Good';
+            description.innerHTML = '<span class="text-success">Good</span> - Air quality is satisfactory';
+        } else if (aqi <= 100) {
+            status = 'moderate';
+            color = 'var(--warning-color)';
+            text = 'Moderate';
+            description.innerHTML = '<span class="text-warning">Moderate</span> - Acceptable air quality';
+        } else if (aqi <= 150) {
+            status = 'unhealthy-sensitive';
+            color = 'var(--unhealthy-sensitive)';
+            text = 'Unhealthy for Sensitive Groups';
+            description.innerHTML = '<span style="color: var(--unhealthy-sensitive)">Caution</span> - Sensitive groups may be affected';
+        } else if (aqi <= 200) {
+            status = 'unhealthy';
+            color = 'var(--danger-color)';
+            text = 'Unhealthy';
+            description.innerHTML = '<span class="text-danger">Unhealthy</span> - Health effects can occur';
+        } else if (aqi <= 300) {
+            status = 'very-unhealthy';
+            color = 'var(--very-unhealthy)';
+            text = 'Very Unhealthy';
+            description.innerHTML = '<span style="color: var(--very-unhealthy)">Very Unhealthy</span> - Serious health effects';
+        } else {
+            status = 'hazardous';
+            color = 'var(--hazardous)';
+            text = 'Hazardous';
+            description.innerHTML = '<span style="color: var(--hazardous)">Hazardous</span> - Emergency conditions';
+        }
+        
+        statusIndicator.className = `status-indicator status-${status}`;
+        statusIndicator.style.backgroundColor = color;
+        currentStatusIndicator.style.backgroundColor = color;
+        currentLabel.textContent = text;
+        currentDescription.textContent = `AQI: ${aqi} - ${text}`;
+        updateAQIMarker(aqi);
+    }
+
+    function updateDashboard() {
+        fetch('/api/v1/sensor-data/latest/')
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    const latest = data[0];
+                    document.getElementById('aqi-value').textContent = latest.aqi;
+                    document.getElementById('pm25-value').textContent = latest.pm25.toFixed(1);
+                    document.getElementById('pm10-value').textContent = latest.pm10.toFixed(1);
+                    document.getElementById('co2-value').textContent = latest.co2.toFixed(0);
+                    document.getElementById('temperature-value').textContent = `${latest.temperature.toFixed(1)} °C`;
+                    document.getElementById('humidity-value').textContent = `${latest.humidity.toFixed(0)} %`;
+                    updateAQIStatus(latest.aqi);
+                }
+            });
+    }
+
+    function updateCharts() {
+        fetch('/api/v1/sensor-data/historical/')
+            .then(response => response.json())
+            .then(data => {
+                const times = data.map(d => new Date(d.timestamp));
+                const pm25Values = data.map(d => d.pm25);
+                const aqiValues = data.map(d => d.aqi);
+
+                const pm25Chart = {
+                    x: times,
+                    y: pm25Values,
+                    type: 'scatter',
+                    name: 'PM2.5',
+                    line: {
+                        color: 'var(--primary-color)',
+                        width: 3,
+                        shape: 'spline'
+                    },
+                    fill: 'tozeroy',
+                    fillcolor: 'rgba(99, 102, 241, 0.1)'
+                };
+
+                const aqiChart = {
+                    x: times,
+                    y: aqiValues,
+                    type: 'scatter',
+                    name: 'AQI',
+                    line: {
+                        color: 'var(--success-color)',
+                        width: 3,
+                        shape: 'spline'
+                    },
+                    fill: 'tozeroy',
+                    fillcolor: 'rgba(16, 185, 129, 0.1)'
+                };
+
+                const layout = {
+                    paper_bgcolor: 'rgba(0,0,0,0)',
+                    plot_bgcolor: 'rgba(0,0,0,0)',
+                    margin: { t: 20, r: 20, b: 40, l: 40 },
+                    xaxis: {
+                        showgrid: true,
+                        gridcolor: 'rgba(0,0,0,0.1)',
+                        title: 'Time'
+                    },
+                    yaxis: {
+                        showgrid: true,
+                        gridcolor: 'rgba(0,0,0,0.1)',
+                        zeroline: false
+                    },
+                    hovermode: 'x unified'
+                };
+
+                Plotly.newPlot('pm25-chart', [pm25Chart], {
+                    ...layout,
+                    yaxis: { ...layout.yaxis, title: 'PM2.5 (μg/m³)' }
+                });
+
+                Plotly.newPlot('aqi-chart', [aqiChart], {
+                    ...layout,
+                    yaxis: { ...layout.yaxis, title: 'AQI' }
+                });
+            });
+    }
+
+    // Update data every 30 seconds
+    updateDashboard();
+    updateCharts();
+    setInterval(updateDashboard, 30000);
+    setInterval(updateCharts, 300000);
+</script>
+{% endblock %} 
